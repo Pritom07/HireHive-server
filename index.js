@@ -20,9 +20,34 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // await client.connect();
+    const usersCollection = client.db("HireHive").collection("users");
+    const jobscollection = client.db("HireHive").collection("jobs");
+    const jobApplicationsCollection = client
+      .db("HireHive")
+      .collection("jobApplications");
 
-    // await client.db("admin").command({ ping: 1 });
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
+    });
+
+    app.patch("/users", async (req, res) => {
+      const user = req.body;
+      const email = user.email;
+      const Password = user.password;
+      const LastSignInTime = user.lastSignInTime;
+      const filter = { email };
+      const updateDoc = {
+        $set: {
+          lastSignInTime: LastSignInTime,
+          password: Password,
+        },
+      };
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
