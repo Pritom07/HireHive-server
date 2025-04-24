@@ -48,6 +48,32 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/users", async (req, res) => {
+      const user = req.body;
+      const name = user.name;
+      const email = user.email;
+      const lastSignInTime = user.lastSignInTime;
+      const creationTime = user.creationTime;
+      const signedInMedium = user.signedInMedium;
+      const filter = { email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          name,
+          email,
+          lastSignInTime,
+          creationTime,
+          signedInMedium,
+        },
+      };
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
+
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
@@ -57,7 +83,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-  res.send("HireHive a job portal");
+  res.send("HireHive -- a job portal server is running");
 });
 
 app.listen(port);
