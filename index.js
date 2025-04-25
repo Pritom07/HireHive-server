@@ -21,7 +21,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const usersCollection = client.db("HireHive").collection("users");
-    const jobscollection = client.db("HireHive").collection("jobs");
+    const jobsCollection = client.db("HireHive").collection("jobs");
     const jobApplicationsCollection = client
       .db("HireHive")
       .collection("jobApplications");
@@ -51,11 +51,11 @@ async function run() {
     app.put("/users", async (req, res) => {
       const user = req.body;
       const name = user.name;
-      const email = user.email;
+      const email = user?.email;
       const lastSignInTime = user.lastSignInTime;
       const creationTime = user.creationTime;
       const signedInMedium = user.signedInMedium;
-      const filter = { email };
+      const filter = email ? { email } : { name };
       const options = { upsert: true };
       const updateDoc = {
         $set: {
@@ -71,6 +71,12 @@ async function run() {
         updateDoc,
         options
       );
+      res.send(result);
+    });
+
+    app.get("/jobs", async (req, res) => {
+      const cursor = jobsCollection.find();
+      const result = await cursor.toArray();
       res.send(result);
     });
 
