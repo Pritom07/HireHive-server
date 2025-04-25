@@ -93,6 +93,22 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/jobApplications", async (req, res) => {
+      const email = req.query.email;
+      const query = { applicant_email: email };
+      const cursor = jobApplicationsCollection.find(query);
+      const result = await cursor.toArray();
+      for (let myapply of result) {
+        const jobId = myapply.jobId;
+        const query = { _id: new ObjectId(jobId) };
+        const desiredjob = await jobsCollection.findOne(query);
+        myapply.company_logo = desiredjob.company_logo;
+        myapply.company = desiredjob.company;
+        myapply.location = desiredjob.location;
+      }
+      res.send(result);
+    });
+
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
