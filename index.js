@@ -74,6 +74,12 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/jobs", async (req, res) => {
+      const jobPost = req.body;
+      const result = await jobsCollection.insertOne(jobPost);
+      res.send(result);
+    });
+
     app.get("/jobs", async (req, res) => {
       const cursor = jobsCollection.find();
       const result = await cursor.toArray();
