@@ -173,11 +173,10 @@ async function run() {
       res.send(result);
     });
 
-    app.put("/jobApplications", async (req, res) => {
+    app.put("/jobApplications/:id", async (req, res) => {
+      const ID = req.params.id;
       const Status = req.body.status;
-      const jobID = req.query.jobID;
-      const email = req.query.email;
-      const filter = { jobID, email };
+      const filter = { _id: new ObjectId(ID) };
       const options = { upsert: true };
       const updateDoc = {
         $set: {
