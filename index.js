@@ -145,10 +145,7 @@ async function run() {
       let newCount = 0;
       if (desiredJob.applicantCount) {
         newCount = desiredJob.applicantCount - 1;
-      } else {
-        newCount = 0;
       }
-
       const updateDoc = {
         $set: {
           applicantCount: newCount,
